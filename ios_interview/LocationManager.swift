@@ -111,17 +111,15 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        self.lastUpdatedLocation = locations.last! as CLLocation
-
+        
+        guard locations.last != nil else {
+            return
+        }
+        lastUpdatedLocation = locations.last!
+        
         if self.isMoreLocationsRequiredForCurrentCycle() {
             self.updateCachedLocations(newLocation: self.lastUpdatedLocation!)
-            if let prevBestLocation = self.prevCycleBestLocation,
-                self.lastUpdatedLocation!.horizontalAccuracy <= prevBestLocation.horizontalAccuracy {
-                // We only save the best location for each cycle.
-                self.prevCycleBestLocation = self.lastUpdatedLocation!
-            } else {
-                self.prevCycleBestLocation = self.lastUpdatedLocation!
-            }
+            self.prevCycleBestLocation = self.lastUpdatedLocation!
             saveLocation(self.lastUpdatedLocation!)
         } else {
             self.changeLocationAccuracy(newAccuracy: .THREE_KILOMETERS)
@@ -177,4 +175,13 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
                          didChangeAuthorization status: CLAuthorizationStatus) {
         // Communicate this issue with the user
     }
+    
+    func shouldUpdateLocation() -> Bool {
+        if MotionBasedActivityRecognition.isUserStationary() && prevCycleBestLocation != nil {
+            saveLocation(prevCycleBestLocation!)
+            return false
+        }
+        return true
+    }
+    
 }

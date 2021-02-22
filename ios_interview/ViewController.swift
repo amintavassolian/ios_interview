@@ -60,13 +60,17 @@ class ViewController: UIViewController {
     }
 
     @objc fileprivate func initializePerformScanningTimer() {
-        ViewController.performScanningTimer =
-            Timer.scheduledTimer(timeInterval: ViewController.TIME_PER_SCAN,
-                                 target: self,
-                                 selector: #selector(self.scan),
-                                 userInfo: nil,
-                                 repeats: true)
-        ViewController.performScanningTimer.fire()
+        
+        if LocationManager.getInstance().shouldUpdateLocation() {
+            ViewController.performScanningTimer =
+                Timer.scheduledTimer(timeInterval: ViewController.TIME_PER_SCAN,
+                                     target: self,
+                                     selector: #selector(self.scan),
+                                     userInfo: nil,
+                                     repeats: true)
+            ViewController.performScanningTimer.fire()
+        }
+        
     }
 
     @objc fileprivate func scan() {
