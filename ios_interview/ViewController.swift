@@ -71,8 +71,16 @@ class ViewController: UIViewController {
     @objc fileprivate func scan() {
 
         if !self.readingActive {
-            LocationManager.getInstance().changeLocationAccuracy(newAccuracy: .BEST)
+            
+            
             MotionBasedActivityRecognition.getActivityRecognitionUpdates()
+            
+            if !MotionBasedActivityRecognition.isUserStationary(){
+                LocationManager.getInstance().changeLocationAccuracy(newAccuracy: .BEST)
+            }else{
+                LocationManager.getInstance().reportPrviousCycleLocations()
+            }
+            
         } else {
             self.readingActive = false
 
