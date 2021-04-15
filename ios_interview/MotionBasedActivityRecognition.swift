@@ -119,7 +119,7 @@ class MotionBasedActivityRecognition {
             saveActivityHistory(activity: activityToSave)
         }
     }
-
+    
     // This function checks recorded activities, if there is at least one.
     // If all of recorded activites indicate that the user is stationary,
     // then the function reports user as stationary”
