@@ -19,10 +19,12 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         refreshStreams()
     }
-
+    
+    //TODO: we can pass all these functionalities to LocationManager class
     func refreshStreams() {
         self.stopAllScans()
 
+        //TODO: View controller should not get access to location manager
         let result = LocationManager.getInstance().startUpdatingLocation(collectionType: .ALWAYS)
         guard result else {
             return
@@ -30,7 +32,7 @@ class ViewController: UIViewController {
 
         self.initializePeriodicScanningTimer()
     }
-
+    
     func stopAllScans() {
         self.readingActive = false
 
@@ -71,8 +73,9 @@ class ViewController: UIViewController {
     @objc fileprivate func scan() {
 
         if !self.readingActive {
-            LocationManager.getInstance().changeLocationAccuracy(newAccuracy: .BEST)
+            self.readingActive = true
             MotionBasedActivityRecognition.getActivityRecognitionUpdates()
+            LocationManager.getInstance().changeLocationAccuracy(newAccuracy: .BEST)
         } else {
             self.readingActive = false
 

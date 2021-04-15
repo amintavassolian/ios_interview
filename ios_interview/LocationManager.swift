@@ -133,10 +133,12 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
                 if self.prevCycleBestLocation == nil {
                     self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
                     self.clearCachedLocations()
-
                 } else {
-                    self.reportPrviousCycleLocations()
-                    self.changeLocationAccuracy(newAccuracy: .THREE_KILOMETERS)
+                    if MotionBasedActivityRecognition.isUserStationary() {
+                        self.reportPrviousCycleLocations()
+                    }else{
+                        self.changeLocationAccuracy(newAccuracy: .THREE_KILOMETERS)
+                    }
                 }
             case .BEST_FOR_NAV:
                 self.locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
